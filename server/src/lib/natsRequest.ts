@@ -1,16 +1,12 @@
 import { randomUUID } from 'crypto';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StringCodec } from 'nats';
-import { FlowContext } from '../resources/context.js';
-import { FlowResult } from '../types/flow.js';
+import { FlowContext } from '../resources/context';
+import { FlowResult } from '../types/flow';
 
 const sc = StringCodec();
 
-export const natsRequest = async <T>(
-  ctx: FlowContext,
-  subject: string,
-  payload: unknown
-): Promise<FlowResult<T>> => {
+export const natsRequest = async <T>(ctx: FlowContext, subject: string, payload: unknown): Promise<FlowResult<T>> => {
   const msg = await ctx.nats.request(subject, sc.encode(JSON.stringify(payload)), {
     timeout: 30000,
   });

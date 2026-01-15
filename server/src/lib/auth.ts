@@ -1,4 +1,4 @@
-import { FlowException, UserInfo } from '../types/flow.js';
+import { FlowException, UserInfo } from '../types/flow';
 
 type RoleCheckParams = {
   userinfo?: UserInfo;

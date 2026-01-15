@@ -1,16 +1,17 @@
 import { z } from 'zod';
-import { createFlow } from '../../lib/flowWrapper.js';
-import { isValidRole } from '../../lib/auth.js';
-import { isValid } from '../../lib/validation.js';
-import { FlowContext } from '../../resources/context.js';
-import { FlowInput } from '../../types/flow.js';
+import { createFlow } from '../../lib/flowWrapper';
+import { isValidRole } from '../../lib/auth';
+import { isValid } from '../../lib/validation';
+import { FlowContext } from '../../resources/context';
+import { FlowInput } from '../../types/flow';
 
 const inputSchema = z.object({
   page: z.number().default(1),
   limit: z.number().default(10),
 });
 
-type Input = FlowInput<z.infer<typeof inputSchema>>;
+type ValidatedInput = z.output<typeof inputSchema>;
+type Input = FlowInput<z.input<typeof inputSchema>>;
 
 type AdminItem = {
   id: string;
@@ -30,7 +31,7 @@ export const getListFlow = (ctx: FlowContext) =>
   createFlow<Input, Response>('api.v1.admin.getList', async (input, trace, ok) => {
     const userinfo = isValidRole({ userinfo: input.userinfo, roles: ['admin'] });
 
-    const { page, limit } = isValid(inputSchema, input.payload || {});
+    const { page, limit } = isValid(inputSchema, input.payload || {}) as ValidatedInput;
 
     trace.push('Fetching admin list');
     const offset = (page - 1) * limit;

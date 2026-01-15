@@ -1,11 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { createFlow } from '../../lib/flowWrapper.js';
-import { isValid } from '../../lib/validation.js';
-import { FlowContext } from '../../resources/context.js';
-import { customers } from '../../schemas/customer.js';
-import { FlowException, FlowInput } from '../../types/flow.js';
-import { signJwt } from '../auth.flow.js';
+import { createFlow } from '../../lib/flowWrapper';
+import { isValid } from '../../lib/validation';
+import { FlowContext } from '../../resources/context';
+import { customers } from '../../schemas/customer';
+import { FlowException, FlowInput } from '../../types/flow';
+import { signJwt } from '../auth.flow';
 
 const inputSchema = z.object({
   email: z.string().email(),
@@ -35,10 +35,7 @@ export const customerLoginFlow = (ctx: FlowContext) =>
     }
 
     trace.push('Generating JWT token');
-    const token = signJwt(
-      { id: customer.id, email: customer.email, role: 'customer' },
-      ctx.config.jwt.secret
-    );
+    const token = signJwt({ id: customer.id, email: customer.email, role: 'customer' }, ctx.config.jwt.secret);
 
     return ok({ token });
   });

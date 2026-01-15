@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { FlowContext } from '../resources/context.js';
-import { natsRequest } from '../lib/natsRequest.js';
+import { FlowContext } from '../resources/context';
+import { natsRequest } from '../lib/natsRequest';
 
 declare module 'fastify' {
   interface FastifyRequest {

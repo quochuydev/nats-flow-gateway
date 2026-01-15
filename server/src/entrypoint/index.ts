@@ -1,10 +1,10 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { createContext } from '../resources/context.js';
-import { registerFlows } from '../flows/register.js';
-import { healthcheckRoute } from './healthcheck.route.js';
-import { adminRoute } from './admin.route.js';
-import { customerRoute } from './customer.route.js';
+import { createContext } from '../resources/context';
+import { registerFlows } from '../flows/register';
+import { healthcheckRoute } from './healthcheck.route';
+import { adminRoute } from './admin.route';
+import { customerRoute } from './customer.route';
 
 const start = async () => {
   const app = Fastify({ logger: true });

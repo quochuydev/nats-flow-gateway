@@ -1,8 +1,8 @@
 import { NatsConnection } from 'nats';
-import { db } from './db.js';
-import { getNats } from './nats.js';
-import { config } from './config.js';
-import { hashPassword, verifyPassword } from './password.js';
+import { db } from './db';
+import { getNats } from './nats';
+import { config } from './config';
+import { hashPassword, verifyPassword } from './password';
 
 export type FlowContext = {
   db: typeof db;

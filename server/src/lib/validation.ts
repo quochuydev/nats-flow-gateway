@@ -1,5 +1,5 @@
 import { ZodSchema } from 'zod';
-import { FlowException } from '../types/flow.js';
+import { FlowException } from '../types/flow';
 
 export const isValid = <T>(schema: ZodSchema<T>, data: unknown): T => {
   const parsed = schema.safeParse(data);

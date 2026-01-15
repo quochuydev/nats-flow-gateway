@@ -1,11 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { createFlow } from '../../lib/flowWrapper.js';
-import { isValid } from '../../lib/validation.js';
-import { FlowContext } from '../../resources/context.js';
-import { admins } from '../../schemas/admin.js';
-import { FlowException, FlowInput } from '../../types/flow.js';
-import { signJwt } from '../auth.flow.js';
+import { createFlow } from '../../lib/flowWrapper';
+import { isValid } from '../../lib/validation';
+import { FlowContext } from '../../resources/context';
+import { admins } from '../../schemas/admin';
+import { FlowException, FlowInput } from '../../types/flow';
+import { signJwt } from '../auth.flow';
 
 const inputSchema = z.object({
   email: z.string().email(),
@@ -35,10 +35,7 @@ export const adminLoginFlow = (ctx: FlowContext) =>
     }
 
     trace.push('Generating JWT token');
-    const token = signJwt(
-      { id: admin.id, email: admin.email, role: 'admin', root: admin.root },
-      ctx.config.jwt.secret
-    );
+    const token = signJwt({ id: admin.id, email: admin.email, role: 'admin', root: admin.root }, ctx.config.jwt.secret);
 
     return ok({ token });
   });

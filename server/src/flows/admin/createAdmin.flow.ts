@@ -1,11 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { createFlow } from '../../lib/flowWrapper.js';
-import { isValidRole } from '../../lib/auth.js';
-import { isValid } from '../../lib/validation.js';
-import { FlowContext } from '../../resources/context.js';
-import { admins } from '../../schemas/admin.js';
-import { FlowException, FlowInput } from '../../types/flow.js';
+import { createFlow } from '../../lib/flowWrapper';
+import { isValidRole } from '../../lib/auth';
+import { isValid } from '../../lib/validation';
+import { FlowContext } from '../../resources/context';
+import { admins } from '../../schemas/admin';
+import { FlowException, FlowInput } from '../../types/flow';
 
 const inputSchema = z.object({
   email: z.string().email(),

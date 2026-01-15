@@ -1,9 +1,6 @@
-import { FlowException, FlowResult, OkFn } from '../types/flow.js';
+import { FlowException, FlowResult, OkFn } from '../types/flow';
 
-export const createFlow = <I, O>(
-  name: string,
-  fn: (input: I, trace: string[], ok: OkFn<O>) => Promise<FlowResult<O>>
-) => {
+export const createFlow = <I, O>(name: string, fn: (input: I, trace: string[], ok: OkFn<O>) => Promise<FlowResult<O>>) => {
   return async (input: I): Promise<FlowResult<O>> => {
     const trace: string[] = [];
 

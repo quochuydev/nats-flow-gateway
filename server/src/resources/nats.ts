@@ -1,5 +1,5 @@
 import { connect, NatsConnection } from 'nats';
-import { config } from './config.js';
+import { config } from './config';
 
 let nc: NatsConnection | null = null;
 

@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { createFlow } from '../../lib/flowWrapper.js';
-import { isValid } from '../../lib/validation.js';
-import { FlowContext } from '../../resources/context.js';
-import { customers } from '../../schemas/customer.js';
-import { FlowException, FlowInput } from '../../types/flow.js';
+import { createFlow } from '../../lib/flowWrapper';
+import { isValid } from '../../lib/validation';
+import { FlowContext } from '../../resources/context';
+import { customers } from '../../schemas/customer';
+import { FlowException, FlowInput } from '../../types/flow';
 
 const inputSchema = z.object({
   email: z.string().email(),

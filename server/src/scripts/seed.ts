@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
-import { db } from '../resources/db.js';
-import { admins } from '../schemas/admin.js';
-import { hashPassword } from '../resources/password.js';
+import { db } from '../resources/db';
+import { admins } from '../schemas/admin';
+import { hashPassword } from '../resources/password';
 
 const seed = async () => {
   console.log('Seeding database...');

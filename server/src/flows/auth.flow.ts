@@ -1,8 +1,8 @@
-import { createFlow } from '../lib/flowWrapper.js';
-import { FlowContext } from '../resources/context.js';
-import { FlowException, FlowInput, UserInfo } from '../types/flow.js';
+import { createFlow } from '../lib/flowWrapper';
+import { FlowContext } from '../resources/context';
+import { FlowException, FlowInput, UserInfo } from '../types/flow';
 import { z } from 'zod';
-import { isValid } from '../lib/validation.js';
+import { isValid } from '../lib/validation';
 import { createHmac } from 'crypto';
 
 const inputSchema = z.object({
@@ -36,9 +36,7 @@ function verifyJwt(token: string, secret: string): UserInfo | null {
     const [headerB64, payloadB64, signatureB64] = token.split('.');
     if (!headerB64 || !payloadB64 || !signatureB64) return null;
 
-    const expectedSignature = createHmac('sha256', secret)
-      .update(`${headerB64}.${payloadB64}`)
-      .digest('base64url');
+    const expectedSignature = createHmac('sha256', secret).update(`${headerB64}.${payloadB64}`).digest('base64url');
 
     if (signatureB64 !== expectedSignature) return null;
 
@@ -58,11 +56,7 @@ function verifyJwt(token: string, secret: string): UserInfo | null {
   }
 }
 
-export function signJwt(
-  payload: { id: string; email: string; role: 'admin' | 'customer'; root?: boolean },
-  secret: string,
-  expiresInSeconds = 86400
-): string {
+export function signJwt(payload: { id: string; email: string; role: 'admin' | 'customer'; root?: boolean }, secret: string, expiresInSeconds = 86400): string {
   const header = { alg: 'HS256', typ: 'JWT' };
   const headerB64 = Buffer.from(JSON.stringify(header)).toString('base64url');
 
@@ -74,9 +68,7 @@ export function signJwt(
   };
   const payloadB64 = Buffer.from(JSON.stringify(fullPayload)).toString('base64url');
 
-  const signature = createHmac('sha256', secret)
-    .update(`${headerB64}.${payloadB64}`)
-    .digest('base64url');
+  const signature = createHmac('sha256', secret).update(`${headerB64}.${payloadB64}`).digest('base64url');
 
   return `${headerB64}.${payloadB64}.${signature}`;
 }

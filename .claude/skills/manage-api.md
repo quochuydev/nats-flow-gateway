@@ -31,11 +31,11 @@ HTTP Request → Fastify Route → NATS Request → Flow → NATS Reply → HTTP
 ```typescript
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { createFlow } from '../../lib/flowWrapper.js';
-import { isValidRole } from '../../lib/auth.js';
-import { isValid } from '../../lib/validation.js';
-import { FlowContext } from '../../resources/context.js';
-import { FlowException, FlowInput } from '../../types/flow.js';
+import { createFlow } from '../../lib/flowWrapper';
+import { isValidRole } from '../../lib/auth';
+import { isValid } from '../../lib/validation';
+import { FlowContext } from '../../resources/context';
+import { FlowException, FlowInput } from '../../types/flow';
 
 const inputSchema = z.object({
   // Define input validation
@@ -81,16 +81,19 @@ app.get('/api/v1/<module>/<path>', { preHandler: auth }, route(ctx, 'api.v1.<mod
 ## Common Patterns
 
 ### Protected route (requires auth)
+
 ```typescript
 const userinfo = isValidRole({ userinfo: input.userinfo });
 ```
 
 ### Protected route (specific role)
+
 ```typescript
 const userinfo = isValidRole({ userinfo: input.userinfo, roles: ['admin'] });
 ```
 
 ### Root admin only
+
 ```typescript
 const userinfo = isValidRole({ userinfo: input.userinfo });
 if (!userinfo.root) {
@@ -99,6 +102,7 @@ if (!userinfo.root) {
 ```
 
 ### Query with pagination
+
 ```typescript
 const inputSchema = z.object({
   page: z.number().default(1),
@@ -113,6 +117,7 @@ const items = await ctx.db.query.table.findMany({
 ```
 
 ### Return 201 for created
+
 ```typescript
 return ok({ id: created.id }, 201);
 ```
