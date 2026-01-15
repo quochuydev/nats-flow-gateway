@@ -29,6 +29,7 @@ docker compose up -d
 
 # Install and run server
 cd server
+cp .env.example .env
 npm install
 npx drizzle-kit generate
 npx tsx src/scripts/migrate.ts
