@@ -1,0 +1,49 @@
+version: '3'
+
+tasks:
+  up:
+    desc: Start docker services
+    cmd: docker-compose up -d
+
+  down:
+    desc: Stop docker services
+    cmd: docker-compose down
+
+  logs:
+    desc: View docker logs
+    cmd: docker-compose logs -f
+
+  dev:
+    desc: Run server in dev mode
+    dir: ./server
+    cmd: npx tsx watch src/entrypoint/index.ts
+
+  db:generate:
+    desc: Generate migrations
+    dir: ./server
+    cmd: npx drizzle-kit generate
+
+  db:migrate:
+    desc: Run migrations
+    dir: ./server
+    cmd: npx tsx src/scripts/migrate.ts
+
+  db:seed:
+    desc: Seed root admin
+    dir: ./server
+    cmd: npx tsx src/scripts/seed.ts
+
+  db:studio:
+    desc: Open Drizzle Studio
+    dir: ./server
+    cmd: npx drizzle-kit studio
+
+  test:
+    desc: Run tests
+    dir: ./server
+    cmd: npx vitest run
+
+  test:watch:
+    desc: Run tests in watch mode
+    dir: ./server
+    cmd: npx vitest --watch
