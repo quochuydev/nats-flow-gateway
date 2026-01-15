@@ -26,5 +26,24 @@ services:
       - '8222:8222'
     command: ['-js', '-m', '8222']
 
+  server:
+    build: .
+    container_name: nats-flow-server
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/server_db
+      NATS_URL: nats://nats:4222
+      JWT_SECRET: dev-secret-change-in-production
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
 volumes:
   postgres_data:

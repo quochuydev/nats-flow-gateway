@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NATS Flow Gateway
 
-## Getting Started
+A Fastify server with NATS message-based architecture, featuring Chain of Thought flow pattern for traceable API operations.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **NATS Message-Based Architecture** - HTTP requests are forwarded to NATS subjects for processing
+- **Chain of Thought Pattern** - Every flow logs trace steps for debugging and monitoring
+- **Drizzle ORM** - Type-safe database operations with PostgreSQL
+- **JWT Authentication** - Secure API access with role-based authorization
+- **Zod Validation** - Runtime input validation with detailed error messages
+- **Dependency Injection** - Testable flows with injectable context
+
+## Architecture
+
+```
+HTTP Request → Fastify Route → NATS Request → Flow → NATS Reply → HTTP Response
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Flow Pattern
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```typescript
+export const exampleFlow = (ctx: FlowContext) =>
+  createFlow('api.v1.module.action', async (input, trace, ok) => {
+    const userinfo = isValidRole({ userinfo: input.userinfo });
+    const data = isValid(inputSchema, input.payload);
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+    trace.push('Processing request');
+    // Business logic here
 
-## Learn More
+    return ok({ result });
+  });
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Quick Start
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Node.js 20+
+- Docker & Docker Compose
+- [Task](https://taskfile.dev/) (optional)
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+# Clone repository
+git clone https://github.com/quochuydev/nats-flow-gateway.git
+cd nats-flow-gateway
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Start infrastructure
+docker compose up -d
+
+# Install dependencies
+cd server && npm install
+
+# Run migrations
+npx drizzle-kit generate
+npx tsx src/scripts/migrate.ts
+
+# Seed root admin
+npx tsx src/scripts/seed.ts
+
+# Start server
+npx tsx src/entrypoint/index.ts
+```
+
+Or with Taskfile:
+
+```bash
+task up           # Start Docker services
+task db:generate  # Generate migrations
+task db:migrate   # Run migrations
+task db:seed      # Seed root admin
+task dev          # Start dev server
+```
+
+## API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/api/v1/healthcheck` | No | Health check |
+| POST | `/api/v1/admin/login` | No | Admin login |
+| POST | `/api/v1/admin/create-admin` | Root | Create admin |
+| GET | `/api/v1/admin/list` | Admin | List admins |
+| POST | `/api/v1/customer/register` | No | Customer registration |
+| POST | `/api/v1/customer/login` | No | Customer login |
+
+## Example Requests
+
+```bash
+# Health check
+curl http://localhost:3001/api/v1/healthcheck
+
+# Admin login
+curl -X POST http://localhost:3001/api/v1/admin/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@localhost.com","password":"admin123"}'
+
+# Get admin list (with token)
+curl http://localhost:3001/api/v1/admin/list \
+  -H "Authorization: Bearer <token>"
+
+# Customer registration
+curl -X POST http://localhost:3001/api/v1/customer/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@test.com","password":"password123","firstName":"John","lastName":"Doe"}'
+```
+
+## Project Structure
+
+```
+server/
+├── src/
+│   ├── entrypoint/        # Fastify routes
+│   ├── flows/             # NATS flow handlers
+│   │   ├── admin/
+│   │   └── customer/
+│   ├── lib/               # Utilities
+│   ├── middleware/        # Fastify middleware
+│   ├── resources/         # Singletons (db, nats, config)
+│   ├── schemas/           # Drizzle schemas
+│   ├── scripts/           # Migration & seed scripts
+│   └── types/             # TypeScript types
+├── drizzle/               # Database migrations
+└── tests/                 # Test files
+```
+
+## Configuration
+
+Environment variables (with defaults):
+
+```bash
+PORT=3001
+DATABASE_URL=postgres://postgres:postgres@localhost:5433/server_db
+NATS_URL=nats://localhost:4222
+JWT_SECRET=dev-secret-change-in-production
+```
+
+## Response Format
+
+### Success
+
+```json
+{
+  "success": true,
+  "status": 200,
+  "data": { ... }
+}
+```
+
+### Error
+
+```json
+{
+  "success": false,
+  "status": 400,
+  "errorCode": "VALIDATION_ERROR",
+  "message": "Invalid input",
+  "detailed": [
+    { "field": "email", "message": "Invalid email" }
+  ]
+}
+```
+
+## Tracing
+
+Every request includes a `x-trace-id` header for correlation:
+
+```bash
+curl -v http://localhost:3001/api/v1/healthcheck
+# < x-trace-id: a9522183-d595-4304-97c1-34c6bb197611
+```
+
+## License
+
+MIT

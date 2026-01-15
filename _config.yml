@@ -1,0 +1,23 @@
+title: NATS Flow Gateway
+description: A Fastify server with NATS message-based architecture, featuring Chain of Thought flow pattern for traceable API operations.
+remote_theme: pages-themes/minimal@v0.2.0
+plugins:
+  - jekyll-remote-theme
+
+# GitHub Pages settings
+baseurl: "/nats-flow-gateway"
+url: "https://quochuydev.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude from build
+exclude:
+  - node_modules
+  - server
+  - Dockerfile
+  - docker-compose*.yml
+  - Taskfile.yml
+  - "*.json"
+  - "*.lock"

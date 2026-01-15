@@ -1,0 +1,13 @@
+# Root files not needed
+node_modules/
+.next/
+.git/
+*.md
+
+# Server exclusions
+server/node_modules/
+server/dist/
+server/.env*
+!server/.env.example
+server/coverage/
+*.log
